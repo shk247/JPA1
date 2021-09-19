@@ -1,8 +1,8 @@
 package com.example.jpashop.repository;
 
 import com.example.jpashop.domain.Order;
+import com.example.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -61,5 +61,21 @@ public class OrderRepository {
             query = query.setParameter("name", orderSearch.getMemberName());
         }
         return query.getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery("select o from Order o"+
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithItem() {
+        return em.createQuery("select distinct o from Order o" +
+                                 " join fetch o.member m" +
+                                 " join fetch  o.delivery d" +
+                                " join fetch o.orderItems oi" +
+                                " join fetch oi.item i", Order.class)
+                .getResultList();
     }
 }
