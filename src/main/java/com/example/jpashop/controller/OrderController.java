@@ -5,9 +5,8 @@ import com.example.jpashop.domain.Order;
 import com.example.jpashop.domain.item.Item;
 import com.example.jpashop.repository.OrderSearch;
 import com.example.jpashop.service.ItemService;
-import com.example.jpashop.service.MemberService;
+import com.example.jpashop.service.MemberServiceOld;
 import com.example.jpashop.service.OrderService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
-    private final MemberService memberService;
+    private final MemberServiceOld memberService;
     private final ItemService itemService;
 
     @GetMapping("/order")

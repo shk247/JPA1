@@ -6,10 +6,16 @@ import com.example.jpashop.domain.OrderItem;
 import com.example.jpashop.domain.OrderStatus;
 import com.example.jpashop.repository.OrderRepository;
 import com.example.jpashop.repository.OrderSearch;
+import com.example.jpashop.repository.order.query.OrderFlatDto;
+import com.example.jpashop.repository.order.query.OrderItemQueryDto;
+import com.example.jpashop.repository.order.query.OrderQueryDto;
+import com.example.jpashop.repository.order.query.OrderQueryRepository;
+import com.example.jpashop.service.query.OrderQueryService;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -21,6 +27,8 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
+    private final OrderQueryService orderQueryService;
 
     // 엔티티 직접 노출 -> 비추
     @GetMapping("/api/v1/orders")
@@ -48,6 +56,46 @@ public class OrderApiController {
         List<Order> orders = orderRepository.findAllWithItem();
         List<OrderDto> collect = orders.stream().map(o -> new OrderDto(o)).collect(Collectors.toList());
         return collect;
+    }
+
+    @GetMapping("/api/v3.1/orders")
+    public List<OrderDto> ordersV3_page(@RequestParam(value = "offset", defaultValue = "0") int offset,
+                                        @RequestParam(value = "limit", defaultValue = "100") int limit) {
+        // 페이징
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
+        List<OrderDto> collect = orders.stream().map(o -> new OrderDto(o)).collect(Collectors.toList());
+        return collect;
+    }
+
+    @GetMapping("/api/v3_osiv/orders")
+    public List<com.example.jpashop.service.query.OrderDto> ordersV3_osiv() {
+        return orderQueryService.ordersV3();
+    }
+
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4(){
+        return orderQueryRepository.findOrderQueryDtos();
+    }
+
+    @GetMapping("/api/v5/orders")
+    public List<OrderQueryDto> ordersV5(){
+        return orderQueryRepository.findAllByDto_optimization();
+    }
+
+    @GetMapping("/api/v6/orders")
+    public List<OrderQueryDto> ordersV6(){
+        List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+
+        return  flats.stream()
+                .collect(Collectors.groupingBy(o -> new OrderQueryDto(o.getOrderId(),
+                                o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                        Collectors.mapping(o -> new OrderItemQueryDto(o.getOrderId(),
+                                o.getItemName(), o.getOrderPrice(), o.getCount()), Collectors.toList())
+                )).entrySet().stream()
+                .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
+                        e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(),
+                        e.getKey().getAddress(), e.getValue()))
+                .collect(Collectors.toList());
     }
 
     @Data

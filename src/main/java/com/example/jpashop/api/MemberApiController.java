@@ -1,11 +1,10 @@
 package com.example.jpashop.api;
 
 import com.example.jpashop.domain.Member;
-import com.example.jpashop.service.MemberService;
+import com.example.jpashop.service.MemberServiceOld;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberApiController {
 
-    private final MemberService memberService;
+    private final MemberServiceOld memberService;
 
     // 장점 : 별도의 파라미터 클래스 안만들어도됨
     @PostMapping("/api/v1/members")

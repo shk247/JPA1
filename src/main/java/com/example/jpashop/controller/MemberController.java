@@ -2,9 +2,8 @@ package com.example.jpashop.controller;
 
 import com.example.jpashop.domain.Address;
 import com.example.jpashop.domain.Member;
-import com.example.jpashop.service.MemberService;
+import com.example.jpashop.service.MemberServiceOld;
 import lombok.RequiredArgsConstructor;
-import org.dom4j.rule.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberServiceOld memberService;
 
     @GetMapping("/members/new")
     public String createForm(Model model) {

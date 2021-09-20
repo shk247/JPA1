@@ -1,7 +1,7 @@
 package com.example.jpashop.service;
 
 import com.example.jpashop.domain.Member;
-import com.example.jpashop.repository.MemberRepository;
+import com.example.jpashop.repository.MemberRepositoryOld;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +19,10 @@ import static org.junit.Assert.*;
 @Transactional
 public class MemberServiceTest {
 
-    @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    MemberServiceOld memberService;
+    @Autowired
+    MemberRepositoryOld memberRepository;
     @Autowired EntityManager em;
 
     @Test
